@@ -35,10 +35,6 @@ h1{
   box-shadow:0 10px 25px rgba(0,0,0,.06);
 }
 
-.lesson h2{
-  margin-top:0;
-}
-
 .refs,.quiz{
   margin-top:16px;
   padding:14px;
@@ -47,10 +43,7 @@ h1{
   border-radius:6px;
 }
 
-.refs ul{
-  margin:8px 0 0;
-  padding-left:18px;
-}
+.refs ul{ padding-left:18px; }
 
 .correct{color:green;}
 .wrong{color:red;}
@@ -64,12 +57,17 @@ h1{
 }
 
 #chatlog{
-  height:220px;
+  height:240px;
   overflow-y:auto;
   background:#f9fafb;
   padding:12px;
   border-radius:8px;
   margin-bottom:10px;
+}
+
+.speaker{
+  cursor:pointer;
+  margin-left:6px;
 }
 
 .loading{
@@ -93,8 +91,6 @@ h1{
 <body>
 
 <h1>🎧 Vibe Coding 入门学院（8 讲）</h1>
-<p>设计者：天津财经大学统计学院教授 龚凤乾</p>
-
 <div id="lessons"></div>
 
 <h2>🤖 AI 助教（DeepSeek）</h2>
@@ -106,18 +102,18 @@ h1{
 </div>
 
 <script>
+/* ---------- 课程内容 ---------- */
 const lessons=[
 {
 title:"第1讲｜什么是 Vibe Coding",
-content:`Vibe Coding 是一种探索阶段的编程方式。
-在需求尚不清晰、问题空间尚未收敛时，
-开发者通过与大语言模型不断试探、修正方向，
-以极低成本换取对问题的理解。
+content:`Vibe Coding 是一种探索阶段的编程方式，
+在需求尚未收敛时，通过与大语言模型反复试探，
+快速理解问题空间。
 
-它不是“乱写”，而是<strong>有意识地探索</strong>。`,
+它强调的是<strong>方向判断</strong>，而不是一次写对。`,
 refs:[
-["Andrej Karpathy","https://twitter.com/karpathy"],
-["OpenAI Cookbook","https://cookbook.openai.com"]
+["少数派｜什么是 Vibe Coding","https://sspai.com"],
+["Andrej Karpathy","https://twitter.com/karpathy"]
 ],
 quiz:{
 q:"Vibe Coding 最适合哪一阶段？",
@@ -127,29 +123,27 @@ answer:1
 },
 {
 title:"第2讲｜为什么 Vibe Coding 会流行",
-content:`Vibe Coding 的流行源于一个事实：
-<strong>试错成本被 LLM 极大压缩</strong>。
-
-过去需要数小时甚至数天的验证，
-现在几分钟即可完成，
-这改变了人类与代码的关系。`,
+content:`Vibe Coding 的流行，本质原因是：
+<strong>LLM 极大降低了试错成本</strong>，
+让“先跑起来”成为理性选择。`,
 refs:[
+["阮一峰｜AI 编程","https://www.ruanyifeng.com/blog/"],
 ["The Bitter Lesson","http://www.incompleteideas.net/IncIdeas/BitterLesson.html"]
 ],
 quiz:{
-q:"其流行的根本原因是？",
+q:"流行的根本原因是？",
 options:["程序员更懒","LLM 降低试错成本","工程已过时","算力无限"],
 answer:1
 }
 },
 {
-title:"第3讲｜Vibe Coding 的适用边界",
-content:`Vibe Coding 并非万能。
-一旦系统涉及安全、资金、医疗或法律责任，
-继续凭感觉推进会迅速放大风险。
+title:"第3讲｜Vibe Coding 的边界",
+content:`当系统涉及资金、安全、医疗或法律责任，
+继续 Vibe Coding 会迅速放大风险。
 
-<strong>知道什么时候停下来，是成熟的标志。</strong>`,
+<strong>知道什么时候停，是成熟的表现。</strong>`,
 refs:[
+["InfoQ｜技术债","https://www.infoq.cn"],
 ["OWASP Top 10","https://owasp.org/www-project-top-ten/"]
 ],
 quiz:{
@@ -159,17 +153,15 @@ answer:2
 }
 },
 {
-title:"第4讲｜从 Vibe 到结构化设计",
-content:`当功能趋于稳定，
-你应开始提炼模块、接口和状态。
-
-Vibe 的终点，
-应该是结构的起点。`,
+title:"第4讲｜从 Vibe 到结构",
+content:`当修改开始重复、逻辑开始纠缠，
+说明探索期结束，应进入结构化阶段。`,
 refs:[
+["阮一峰｜软件设计","https://www.ruanyifeng.com/blog/"],
 ["Refactoring","https://martinfowler.com/books/refactoring.html"]
 ],
 quiz:{
-q:"何时应转向结构化？",
+q:"应何时转向结构化？",
 options:["一开始","功能稳定后","永远不用","越晚越好"],
 answer:1
 }
@@ -177,11 +169,11 @@ answer:1
 {
 title:"第5讲｜什么是 SDD",
 content:`SDD（规格驱动开发）强调：
-<strong>先明确“应该是什么”，再写代码</strong>。
+先把“应该是什么”说清楚。
 
-规格可以是接口、不变量或状态图，
-而不一定是厚文档。`,
+规格可以是接口、状态机、不变量。`,
 refs:[
+["腾讯技术工程｜系统设计","https://cloud.tencent.com"],
 ["Design by Contract","https://en.wikipedia.org/wiki/Design_by_contract"]
 ],
 quiz:{
@@ -191,13 +183,11 @@ answer:1
 }
 },
 {
-title:"第6讲｜Vibe Coding 与 SDD 的关系",
-content:`Vibe 与 SDD 并不冲突。
-最佳实践是：
-先 Vibe 探索，再用 SDD 收敛。
-
-<strong>节奏感，胜过方法论。</strong>`,
+title:"第6讲｜Vibe 与 SDD 的关系",
+content:`最佳实践不是二选一，
+而是：先 Vibe 探索，再 SDD 收敛。`,
 refs:[
+["阿里技术｜工程实践","https://developer.aliyun.com"],
 ["Shape Up","https://basecamp.com/shapeup"]
 ],
 quiz:{
@@ -207,12 +197,11 @@ answer:2
 }
 },
 {
-title:"第7讲｜如何与 AI 正确协作",
+title:"第7讲｜如何与 AI 协作",
 content:`AI 不懂你的项目，
-它只理解你给出的上下文。
-
-好 prompt = 明确目标 + 明确约束。`,
+它只理解你提供的上下文和约束。`,
 refs:[
+["少数派｜Prompt 写作","https://sspai.com"],
 ["Prompting Guide","https://www.promptingguide.ai/"]
 ],
 quiz:{
@@ -222,12 +211,11 @@ answer:2
 }
 },
 {
-title:"第8讲｜给新人的最终建议",
+title:"第8讲｜最终建议",
 content:`Vibe Coding 是工具，不是信仰。
-
-你要为结果负责，
-而不是为“感觉”负责。`,
+你要为结果负责，而不是为感觉负责。`,
 refs:[
+["阮一峰｜程序员成长","https://www.ruanyifeng.com/blog/"],
 ["The Pragmatic Programmer","https://pragprog.com/titles/tpp20/"]
 ],
 quiz:{
@@ -263,6 +251,7 @@ ${l.quiz.options.map((o,j)=>`
 root.appendChild(d);
 });
 
+/* ---------- 测验 ---------- */
 function check(i,a){
 const s=document.querySelector(`input[name="q${i}"]:checked`);
 if(!s)return;
@@ -272,18 +261,48 @@ document.getElementById("res"+i).innerHTML=
 : "<span class='wrong'>✖ 建议重做</span>";
 }
 
+/* ---------- AI + TTS ---------- */
+let speaking=false;
+let utterance=null;
+
 async function sendChat(){
 const input=document.getElementById("chatInput");
 const log=document.getElementById("chatlog");
+
 log.innerHTML+=`<div><b>你：</b>${input.value}</div>`;
 log.innerHTML+=`<div id="loading">AI 思考中
 <span class="loading"></span><span class="loading"></span><span class="loading"></span>
 </div>`;
-const r=await fetch("/.netlify/functions/chat",{method:"POST",body:JSON.stringify({message:input.value})});
+
+const r=await fetch("/.netlify/functions/chat",{
+  method:"POST",
+  body:JSON.stringify({message:input.value})
+});
 const d=await r.json();
 document.getElementById("loading").remove();
-log.innerHTML+=`<div><b>AI：</b>${d.reply}</div>`;
+
+const replyId="reply"+Date.now();
+log.innerHTML+=`
+<div id="${replyId}">
+<b>AI：</b>${d.reply}
+<span class="speaker" onclick="toggleSpeak('${replyId}')">🔊</span>
+</div>`;
+
 input.value="";
+}
+
+function toggleSpeak(id){
+const text=document.getElementById(id).innerText.replace("🔊","");
+if(speaking){
+  speechSynthesis.cancel();
+  speaking=false;
+}else{
+  utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang="zh-CN";
+  speechSynthesis.speak(utterance);
+  speaking=true;
+  utterance.onend=()=>speaking=false;
+}
 }
 </script>
 
