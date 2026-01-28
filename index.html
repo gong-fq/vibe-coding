@@ -4,154 +4,175 @@
 <meta charset="UTF-8" />
 <title>Vibe Coding 入门学院</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body { font-family: system-ui, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
-h1, h2 { color: #333; }
-.lesson { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-.quiz { background: #f9f9f9; padding: 10px; margin-top: 10px; }
-button { padding: 6px 12px; margin-top: 8px; }
+:root {
+  --primary:#4f46e5;
+  --bg:#f4f6fb;
+  --card:#ffffff;
+}
+
+body {
+  font-family: system-ui,-apple-system,BlinkMacSystemFont;
+  background: var(--bg);
+  margin: 0;
+  padding: 20px;
+}
+
+h1 { text-align:center; color:var(--primary); }
+
+.lesson {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 25px 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+}
+
+.lesson h2 { color:#111827; }
+
+.quiz, .refs {
+  margin-top: 15px;
+  padding: 12px;
+  border-left: 4px solid var(--primary);
+  background:#f9fafb;
+}
+
 .correct { color: green; }
 .wrong { color: red; }
-#chatbox { border: 1px solid #ccc; padding: 10px; margin-top: 30px; }
-#chatlog { height: 200px; overflow-y: auto; background: #fafafa; padding: 8px; }
+
+#chatbox {
+  background:var(--card);
+  border-radius:12px;
+  padding:15px;
+  margin-top:40px;
+}
+
+#chatlog {
+  height:220px;
+  overflow-y:auto;
+  background:#f9fafb;
+  padding:10px;
+  border-radius:8px;
+}
+
+.loading {
+  display:inline-block;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--primary);
+  animation: blink 1.4s infinite both;
+}
+.loading:nth-child(2){animation-delay:.2s}
+.loading:nth-child(3){animation-delay:.4s}
+
+@keyframes blink {
+  0%{opacity:.2}
+  20%{opacity:1}
+  100%{opacity:.2}
+}
 </style>
 </head>
 
 <body>
 
 <h1>🎧 Vibe Coding 入门学院（8 讲）</h1>
-<p>目标：让新手<strong>快速理解什么是 Vibe Coding、何时该停下来回到 SDD</strong></p>
-<p>设计者：天津财经大学统计学院教授 龚凤乾</p>
 
 <div id="lessons"></div>
 
-<hr>
+<h2>🤖 AI 助教（DeepSeek）</h2>
 
-<h2>🤖 AI 助手（DeepSeek）</h2>
 <div id="chatbox">
   <div id="chatlog"></div>
-  <input id="chatInput" placeholder="向 AI 提问…" style="width:80%">
+  <input id="chatInput" style="width:75%" placeholder="向 AI 提问…" />
   <button onclick="sendChat()">发送</button>
 </div>
 
 <script>
 const lessons = [
 {
-title: "第1讲：什么是 Vibe Coding",
-content: "Vibe Coding 是一种依赖直觉、快速试错、与 LLM 协作的编码方式，适合探索期。",
-quiz: {
-q: "Vibe Coding 最适合哪种阶段？",
-options: ["需求冻结期", "探索与原型期", "上线维护期", "安全审计期"],
-answer: 1
+title:"第1讲｜什么是 Vibe Coding",
+content:`
+Vibe Coding 并不是“乱写代码”，而是一种<strong>探索阶段的协作式编程方法</strong>。
+在需求尚不明确、问题空间还在形成时，与 LLM 快速对话、尝试、否定、再尝试，往往比一开始就写规格更高效。
+
+但它的前提是：你<strong>知道自己还处在探索期</strong>。
+`,
+refs:[
+["Karpathy on Vibe Coding","https://twitter.com/karpathy"],
+["OpenAI Cookbook","https://cookbook.openai.com"]
+],
+quiz:{
+q:"Vibe Coding 最适合的阶段是？",
+options:["需求冻结期","探索与原型期","安全审计期","长期维护期"],
+answer:1
 }
 },
 {
-title: "第2讲：为什么 Vibe Coding 会流行",
-content: "LLM 极大降低了试错成本，让“先跑起来”变得可行。",
-quiz: {
-q: "Vibe Coding 流行的根本原因是？",
-options: ["程序员更懒了", "算力便宜", "LLM 降低试错成本", "传统工程过时"],
-answer: 2
-}
-},
-{
-title: "第3讲：Vibe Coding 的边界",
-content: "Vibe Coding 不适合安全、支付、医疗等高风险模块。",
-quiz: {
-q: "以下哪类模块不适合 Vibe Coding？",
-options: ["Demo 页面", "内部工具", "支付系统", "概念验证"],
-answer: 2
-}
-},
-{
-title: "第4讲：从 Vibe 到结构",
-content: "当功能稳定后，应提炼模块、接口与状态。",
-quiz: {
-q: "何时应从 Vibe 转向结构化设计？",
-options: ["一开始", "功能反复变化时", "功能稳定后", "永远不需要"],
-answer: 2
-}
-},
-{
-title: "第5讲：SDD 是什么",
-content: "SDD（Spec Driven Development）以规格说明为核心。",
-quiz: {
-q: "SDD 的核心是？",
-options: ["写很多文档", "规格先行", "不使用 AI", "慢开发"],
-answer: 1
-}
-},
-{
-title: "第6讲：Vibe + SDD 的正确关系",
-content: "Vibe 用于探索，SDD 用于收敛。",
-quiz: {
-q: "最佳实践是？",
-options: ["只用 Vibe", "只用 SDD", "先 Vibe 后 SDD", "完全不用 AI"],
-answer: 2
-}
-},
-{
-title: "第7讲：如何与 AI 正确对话",
-content: "好 prompt = 明确目标 + 约束 + 示例。",
-quiz: {
-q: "以下哪项是好 prompt 的关键？",
-options: ["越长越好", "明确约束", "多情绪", "少上下文"],
-answer: 1
-}
-},
-{
-title: "第8讲：给新人的最终建议",
-content: "不要神化 Vibe Coding，它是工具，不是信仰。",
-quiz: {
-q: "对 Vibe Coding 的正确态度是？",
-options: ["完全依赖", "完全否定", "理性使用", "只给新手用"],
-answer: 2
+title:"第2讲｜为什么它会流行",
+content:`
+Vibe Coding 的流行，本质上是<strong>试错成本被极大压缩</strong>的结果。
+LLM 让“先跑起来”变得廉价，而人类则专注于判断方向是否正确。
+
+但注意：成本降低 ≠ 没有成本。
+`,
+refs:[
+["The Bitter Lesson","http://www.incompleteideas.net/IncIdeas/BitterLesson.html"]
+],
+quiz:{
+q:"Vibe Coding 流行的根本原因？",
+options:["程序员更懒","LLM 降低试错成本","工程过时","算力无限"],
+answer:1
 }
 }
 ];
 
-const lessonsDiv = document.getElementById("lessons");
+const root=document.getElementById("lessons");
 
-lessons.forEach((l, i) => {
-  const div = document.createElement("div");
-  div.className = "lesson";
-  div.innerHTML = `
-    <h2>${l.title}</h2>
-    <p>${l.content}</p>
-    <div class="quiz">
-      <strong>小考：</strong>${l.quiz.q}<br>
-      ${l.quiz.options.map((o, idx) =>
-        `<label><input type="radio" name="q${i}" value="${idx}"> ${o}</label><br>`
-      ).join("")}
-      <button onclick="check(${i}, ${l.quiz.answer})">提交</button>
-      <div id="res${i}"></div>
-    </div>
-  `;
-  lessonsDiv.appendChild(div);
+lessons.forEach((l,i)=>{
+const d=document.createElement("div");
+d.className="lesson";
+d.innerHTML=`
+<h2>${l.title}</h2>
+<p>${l.content}</p>
+
+<div class="refs">
+<strong>参考阅读：</strong>
+<ul>${l.refs.map(r=>`<li><a href="${r[1]}" target="_blank">${r[0]}</a></li>`).join("")}</ul>
+</div>
+
+<div class="quiz">
+<strong>小测：</strong>${l.quiz.q}<br>
+${l.quiz.options.map((o,j)=>`
+<label><input type="radio" name="q${i}" value="${j}"> ${o}</label><br>`).join("")}
+<button onclick="check(${i},${l.quiz.answer})">提交</button>
+<div id="res${i}"></div>
+</div>
+`;
+root.appendChild(d);
 });
 
-function check(i, ans) {
-  const sel = document.querySelector(`input[name="q${i}"]:checked`);
-  const res = document.getElementById("res"+i);
-  if (!sel) return;
-  if (parseInt(sel.value) === ans) {
-    res.innerHTML = "<span class='correct'>✔ 正确！进入下一讲。</span>";
-  } else {
-    res.innerHTML = "<span class='wrong'>✖ 未完全理解，建议重做。</span>";
-  }
+function check(i,a){
+const s=document.querySelector(`input[name="q${i}"]:checked`);
+if(!s)return;
+document.getElementById("res"+i).innerHTML=
+(+s.value===a)
+? "<span class='correct'>✔ 正确</span>"
+: "<span class='wrong'>✖ 建议重做</span>";
 }
 
-async function sendChat() {
-  const input = document.getElementById("chatInput");
-  const log = document.getElementById("chatlog");
-  log.innerHTML += `<div><b>你：</b>${input.value}</div>`;
-  const r = await fetch("/.netlify/functions/chat", {
-    method: "POST",
-    body: JSON.stringify({ message: input.value })
-  });
-  const d = await r.json();
-  log.innerHTML += `<div><b>AI：</b>${d.reply}</div>`;
-  input.value = "";
+async function sendChat(){
+const input=document.getElementById("chatInput");
+const log=document.getElementById("chatlog");
+log.innerHTML+=`<div><b>你：</b>${input.value}</div>`;
+log.innerHTML+=`<div id="loading">AI 正在思考
+<span class="loading"></span><span class="loading"></span><span class="loading"></span>
+</div>`;
+const r=await fetch("/.netlify/functions/chat",{method:"POST",body:JSON.stringify({message:input.value})});
+const d=await r.json();
+document.getElementById("loading").remove();
+log.innerHTML+=`<div><b>AI：</b>${d.reply}</div>`;
+input.value="";
 }
 </script>
 
