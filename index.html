@@ -15,16 +15,196 @@
     button.secondary{background:var(--secondary)}
     .quiz{margin-top:.5rem;padding:.5rem;border-left:4px solid var(--secondary)}
     .ref{font-size:.9rem;color:#374151;margin-top:.5rem}
-    #chat{position:fixed;right:1rem;bottom:1rem;width:420px;max-width:95vw;height:520px;background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;}
-    #chat header{background:var(--primary);padding:.5rem;font-size:.9rem;color:#fff}
-    #messages{flex:1;overflow:auto;padding:.5rem;font-size:.9rem}
-    #inputArea{display:flex}
-    #inputArea input{flex:1;border:none;border-top:1px solid #e5e7eb;padding:.5rem}
-    #inputArea button{border-radius:0 0 12px 0}
-    .msg.ai{background:#eef2ff;border-radius:8px;padding:.4rem;margin:.3rem 0}
-    .speaker{cursor:pointer;margin-left:.3rem}
-    .loader{display:inline-block;width:18px;height:18px;border:3px solid #c7d2fe;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    
+    /* ===== 优化的聊天框样式（保持原有风格） ===== */
+    #chat {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      width: 380px; /* 稍微调小一点 */
+      max-width: 90vw;
+      height: 450px; /* 高度减小 */
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    /* 最小化状态 */
+    #chat.minimized {
+      height: 45px; /* 只显示标题栏 */
+      overflow: hidden;
+    }
+    
+    /* 标题栏 - 可点击最小化 */
+    #chat header {
+      background: var(--primary);
+      padding: .6rem;
+      font-size: .9rem;
+      color: #fff;
+      border-radius: 14px 14px 0 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    
+    .chat-title {
+      flex: 1;
+    }
+    
+    .chat-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .chat-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .chat-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* 消息区域 - 优化布局 */
+    #messages {
+      flex: 1;
+      overflow: auto;
+      padding: .8rem;
+      font-size: .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    /* 消息气泡 */
+    .msg {
+      max-width: 90%;
+      padding: .6rem .8rem;
+      border-radius: 12px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    
+    .msg.ai {
+      background: #eef2ff;
+      align-self: flex-start;
+      border-radius: 0 12px 12px 12px;
+    }
+    
+    .msg.user {
+      background: var(--primary);
+      color: white;
+      align-self: flex-end;
+      border-radius: 12px 12px 0 12px;
+    }
+    
+    /* 输入区域 */
+    #inputArea {
+      display: flex;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    #userInput {
+      flex: 1;
+      border: none;
+      padding: .7rem;
+      font-size: .9rem;
+      outline: none;
+      border-radius: 0 0 0 14px;
+    }
+    
+    #sendBtn {
+      border-radius: 0 0 14px 0;
+      padding: 0 1.2rem;
+    }
+    
+    /* 保持原有的语音按钮样式 */
+    .speaker {
+      cursor: pointer;
+      margin-left: .3rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      font-size: 0.7rem;
+      color: var(--primary);
+    }
+    
+    .speaker:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* 加载动画保持原有 */
+    .loader {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #c7d2fe;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      #chat {
+        width: calc(100vw - 2rem);
+        right: 1rem;
+        left: 1rem;
+        max-width: calc(100vw - 2rem);
+        height: 400px; /* 移动端更小高度 */
+      }
+      
+      #chat.minimized {
+        height: 40px;
+        width: 120px;
+        right: 1rem;
+        left: auto;
+      }
+    }
+    
+    /* 防止聊天框遮挡页面内容提示 */
+    body::after {
+      content: "💡 右下角可调整AI助手窗口";
+      position: fixed;
+      bottom: 480px;
+      right: 1rem;
+      background: var(--secondary);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    
+    body:hover::after {
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
@@ -34,15 +214,30 @@
   <p>天津财经大学统计学院教授 龚凤乾</p>
 </header>
 <div class="container" id="lessons"></div>
+
+<!-- 优化后的聊天框 -->
 <div id="chat">
-  <header>AI 助手（DeepSeek）</header>
-  <div id="messages"></div>
+  <header onclick="toggleMinimize()">
+    <span class="chat-title">AI 助手（DeepSeek）</span>
+    <div class="chat-controls">
+      <button class="chat-btn" onclick="toggleMinimize(event)">−</button>
+      <button class="chat-btn" onclick="clearChat()">🗑️</button>
+    </div>
+  </header>
+  <div id="messages">
+    <!-- 默认欢迎消息 -->
+    <div class="msg ai">
+      我是 Vibe Coding 培训助教，有什么问题可以问我！<span class='speaker' onclick='toggleTTS(this, "我是 Vibe Coding 培训助教，有什么问题可以问我！")'>🔊</span>
+    </div>
+  </div>
   <div id="inputArea">
     <input id="userInput" placeholder="随时提问…" />
     <button id="sendBtn">发送</button>
   </div>
 </div>
+
 <script>
+// ===== 保持原有的课程数据 =====
 const lessonsData = [
   {title:"第1讲｜什么是 Vibe Coding", content:"Vibe Coding 指的是在几乎不做严格设计的前提下，依靠直觉、感觉和即时反馈来编写代码。它强调‘先跑起来’，非常适合原型阶段或学习初期。", quiz:{q:"Vibe Coding 的核心特点是？",options:["严格规格","先设计后编码","直觉驱动快速实现","形式化验证"],a:2}, ref:"中文：https://www.zhihu.com/question/442845233，English: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"},
   {title:"第2讲｜Vibe Coding 为何流行", content:"随着大模型出现，开发者可以用自然语言快速生成代码，使得凭感觉试错的成本大幅下降，Vibe Coding 因此流行。", quiz:{q:"促使 Vibe Coding 流行的关键技术？",options:["区块链","大语言模型","编译器","操作系统"],a:1}, ref:"中文：https://www.infoq.cn/article/xyz，English: https://arxiv.org/abs/2301.11102"},
@@ -54,6 +249,7 @@ const lessonsData = [
   {title:"第8讲｜从新手到成熟开发者", content:"真正成熟的开发者知道何时凭感觉，何时回到规格。", quiz:{q:"成熟标志是？",options:["写得快","不用设计","灵活切换方法","完全依赖 AI"],a:2}, ref:"中文：https://zhuanlan.zhihu.com/p/xyz，English: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"}
 ];
 
+// ===== 保持原有的课程渲染 =====
 const lessonsDiv = document.getElementById('lessons');
 lessonsData.forEach((l,i)=>{
   const d = document.createElement('div'); d.className='lesson';
@@ -69,30 +265,131 @@ function check(i){
   else alert('正确！');
 }
 
-// AI Chat & TTS
-let speaking = false; let utter;
-function cleanText(t){return t.replace(/[ -⿿\p{P}\p{S}]/gu,'');}
-async function sendMsg(){
-  const inp=document.getElementById('userInput'); if(!inp.value) return;
-  const msg=inp.value; inp.value='';
-  const mdiv=document.getElementById('messages');
-  const loader = document.createElement('div'); loader.className='msg ai'; loader.innerHTML='<span class="loader"></span>';
-  mdiv.appendChild(loader); mdiv.scrollTop=mdiv.scrollHeight;
-  try{
-    const res = await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+// ===== 聊天功能优化（保持原有功能） =====
+let speaking = false;
+let utter;
+let isMinimized = false;
+
+function cleanText(t) {
+  return t.replace(/[ -⿿\p{P}\p{S}]/gu,'');
+}
+
+// 切换最小化/最大化
+function toggleMinimize(e) {
+  if (e) e.stopPropagation(); // 防止事件冒泡
+  
+  const chat = document.getElementById('chat');
+  isMinimized = !isMinimized;
+  
+  if (isMinimized) {
+    chat.classList.add('minimized');
+  } else {
+    chat.classList.remove('minimized');
+    // 展开时聚焦输入框
+    setTimeout(() => {
+      document.getElementById('userInput').focus();
+    }, 100);
+  }
+}
+
+// 清空聊天记录
+function clearChat() {
+  const messages = document.getElementById('messages');
+  messages.innerHTML = '<div class="msg ai">我是 Vibe Coding 培训助教，有什么问题可以问我！<span class="speaker" onclick="toggleTTS(this, \'我是 Vibe Coding 培训助教，有什么问题可以问我！\')">🔊</span></div>';
+}
+
+// 发送消息（保持原有逻辑）
+async function sendMsg() {
+  const inp = document.getElementById('userInput');
+  if (!inp.value.trim()) return;
+  
+  const msg = inp.value;
+  inp.value = '';
+  
+  const mdiv = document.getElementById('messages');
+  
+  // 添加用户消息
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user';
+  userMsg.textContent = msg;
+  mdiv.appendChild(userMsg);
+  
+  // 确保聊天框展开
+  if (isMinimized) {
+    toggleMinimize();
+  }
+  
+  // 显示加载状态
+  const loader = document.createElement('div');
+  loader.className = 'msg ai';
+  loader.innerHTML = '<span class="loader"></span> 思考中...';
+  mdiv.appendChild(loader);
+  mdiv.scrollTop = mdiv.scrollHeight;
+  
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+    
     const data = await res.json();
-    loader.innerHTML = `${data.reply}<span class='speaker' onclick='toggleTTS(this,`+JSON.stringify(data.reply)+`)'>🔊</span>`;
-  }catch(e){loader.innerHTML='AI 暂时不可用，请稍后再试';}
+    
+    // 移除加载状态，添加AI回复
+    loader.remove();
+    
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'msg ai';
+    aiMsg.innerHTML = `${data.reply}<span class='speaker' onclick='toggleTTS(this, ${JSON.stringify(data.reply)})'>🔊</span>`;
+    mdiv.appendChild(aiMsg);
+    
+  } catch (e) {
+    loader.innerHTML = 'AI 暂时不可用，请稍后再试';
+  }
+  
   mdiv.scrollTop = mdiv.scrollHeight;
 }
-document.getElementById('sendBtn').addEventListener('click',sendMsg);
-function toggleTTS(el,text){
-  if(speaking){speechSynthesis.cancel();speaking=false; return;}
-  utter=new SpeechSynthesisUtterance(cleanText(text));
-  utter.lang='zh-CN'; utter.rate=1; utter.pitch=1;
-  speaking=true; utter.onend=()=>speaking=false;
+
+// 事件监听器
+document.getElementById('sendBtn').addEventListener('click', sendMsg);
+
+// 回车发送
+document.getElementById('userInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    sendMsg();
+  }
+});
+
+// 语音功能（保持原有）
+function toggleTTS(el, text) {
+  if (speaking) {
+    speechSynthesis.cancel();
+    speaking = false;
+    return;
+  }
+  
+  utter = new SpeechSynthesisUtterance(cleanText(text));
+  utter.lang = 'zh-CN';
+  utter.rate = 1;
+  utter.pitch = 1;
+  speaking = true;
+  
+  utter.onend = () => {
+    speaking = false;
+  };
+  
   speechSynthesis.speak(utter);
 }
+
+// 页面加载后自动聚焦输入框（如果聊天框可见）
+window.addEventListener('load', function() {
+  // 延迟一会儿，让页面完全加载
+  setTimeout(() => {
+    if (!isMinimized) {
+      document.getElementById('userInput').focus();
+    }
+  }, 500);
+});
 </script>
 </body>
 </html>
