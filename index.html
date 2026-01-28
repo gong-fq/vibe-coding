@@ -6,67 +6,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root {
+:root{
   --primary:#4f46e5;
   --bg:#f4f6fb;
   --card:#ffffff;
+  --muted:#6b7280;
 }
 
-body {
-  font-family: system-ui,-apple-system,BlinkMacSystemFont;
-  background: var(--bg);
-  margin: 0;
-  padding: 20px;
+body{
+  margin:0;
+  padding:24px;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  background:var(--bg);
+  color:#111827;
 }
 
-h1 { text-align:center; color:var(--primary); }
-
-.lesson {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
-  margin: 25px 0;
-  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+h1{
+  text-align:center;
+  color:var(--primary);
+  margin-bottom:30px;
 }
 
-.lesson h2 { color:#111827; }
-
-.quiz, .refs {
-  margin-top: 15px;
-  padding: 12px;
-  border-left: 4px solid var(--primary);
-  background:#f9fafb;
-}
-
-.correct { color: green; }
-.wrong { color: red; }
-
-#chatbox {
+.lesson{
   background:var(--card);
-  border-radius:12px;
-  padding:15px;
-  margin-top:40px;
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:28px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
 }
 
-#chatlog {
+.lesson h2{
+  margin-top:0;
+}
+
+.refs,.quiz{
+  margin-top:16px;
+  padding:14px;
+  background:#f9fafb;
+  border-left:4px solid var(--primary);
+  border-radius:6px;
+}
+
+.refs ul{
+  margin:8px 0 0;
+  padding-left:18px;
+}
+
+.correct{color:green;}
+.wrong{color:red;}
+
+#chatbox{
+  margin-top:50px;
+  background:var(--card);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+#chatlog{
   height:220px;
   overflow-y:auto;
   background:#f9fafb;
-  padding:10px;
+  padding:12px;
   border-radius:8px;
+  margin-bottom:10px;
 }
 
-.loading {
+.loading{
   display:inline-block;
   width:8px;height:8px;
   border-radius:50%;
   background:var(--primary);
-  animation: blink 1.4s infinite both;
+  animation:blink 1.4s infinite both;
 }
 .loading:nth-child(2){animation-delay:.2s}
 .loading:nth-child(3){animation-delay:.4s}
 
-@keyframes blink {
+@keyframes blink{
   0%{opacity:.2}
   20%{opacity:1}
   100%{opacity:.2}
@@ -89,40 +105,134 @@ h1 { text-align:center; color:var(--primary); }
 </div>
 
 <script>
-const lessons = [
+const lessons=[
 {
 title:"第1讲｜什么是 Vibe Coding",
-content:`
-Vibe Coding 并不是“乱写代码”，而是一种<strong>探索阶段的协作式编程方法</strong>。
-在需求尚不明确、问题空间还在形成时，与 LLM 快速对话、尝试、否定、再尝试，往往比一开始就写规格更高效。
+content:`Vibe Coding 是一种探索阶段的编程方式。
+在需求尚不清晰、问题空间尚未收敛时，
+开发者通过与大语言模型不断试探、修正方向，
+以极低成本换取对问题的理解。
 
-但它的前提是：你<strong>知道自己还处在探索期</strong>。
-`,
+它不是“乱写”，而是<strong>有意识地探索</strong>。`,
 refs:[
-["Karpathy on Vibe Coding","https://twitter.com/karpathy"],
+["Andrej Karpathy","https://twitter.com/karpathy"],
 ["OpenAI Cookbook","https://cookbook.openai.com"]
 ],
 quiz:{
-q:"Vibe Coding 最适合的阶段是？",
+q:"Vibe Coding 最适合哪一阶段？",
 options:["需求冻结期","探索与原型期","安全审计期","长期维护期"],
 answer:1
 }
 },
 {
-title:"第2讲｜为什么它会流行",
-content:`
-Vibe Coding 的流行，本质上是<strong>试错成本被极大压缩</strong>的结果。
-LLM 让“先跑起来”变得廉价，而人类则专注于判断方向是否正确。
+title:"第2讲｜为什么 Vibe Coding 会流行",
+content:`Vibe Coding 的流行源于一个事实：
+<strong>试错成本被 LLM 极大压缩</strong>。
 
-但注意：成本降低 ≠ 没有成本。
-`,
+过去需要数小时甚至数天的验证，
+现在几分钟即可完成，
+这改变了人类与代码的关系。`,
 refs:[
 ["The Bitter Lesson","http://www.incompleteideas.net/IncIdeas/BitterLesson.html"]
 ],
 quiz:{
-q:"Vibe Coding 流行的根本原因？",
-options:["程序员更懒","LLM 降低试错成本","工程过时","算力无限"],
+q:"其流行的根本原因是？",
+options:["程序员更懒","LLM 降低试错成本","工程已过时","算力无限"],
 answer:1
+}
+},
+{
+title:"第3讲｜Vibe Coding 的适用边界",
+content:`Vibe Coding 并非万能。
+一旦系统涉及安全、资金、医疗或法律责任，
+继续凭感觉推进会迅速放大风险。
+
+<strong>知道什么时候停下来，是成熟的标志。</strong>`,
+refs:[
+["OWASP Top 10","https://owasp.org/www-project-top-ten/"]
+],
+quiz:{
+q:"哪类系统最不适合 Vibe Coding？",
+options:["Demo","内部工具","支付系统","原型页面"],
+answer:2
+}
+},
+{
+title:"第4讲｜从 Vibe 到结构化设计",
+content:`当功能趋于稳定，
+你应开始提炼模块、接口和状态。
+
+Vibe 的终点，
+应该是结构的起点。`,
+refs:[
+["Refactoring","https://martinfowler.com/books/refactoring.html"]
+],
+quiz:{
+q:"何时应转向结构化？",
+options:["一开始","功能稳定后","永远不用","越晚越好"],
+answer:1
+}
+},
+{
+title:"第5讲｜什么是 SDD",
+content:`SDD（规格驱动开发）强调：
+<strong>先明确“应该是什么”，再写代码</strong>。
+
+规格可以是接口、不变量或状态图，
+而不一定是厚文档。`,
+refs:[
+["Design by Contract","https://en.wikipedia.org/wiki/Design_by_contract"]
+],
+quiz:{
+q:"SDD 的核心是？",
+options:["代码风格","规格先行","不用 AI","慢开发"],
+answer:1
+}
+},
+{
+title:"第6讲｜Vibe Coding 与 SDD 的关系",
+content:`Vibe 与 SDD 并不冲突。
+最佳实践是：
+先 Vibe 探索，再用 SDD 收敛。
+
+<strong>节奏感，胜过方法论。</strong>`,
+refs:[
+["Shape Up","https://basecamp.com/shapeup"]
+],
+quiz:{
+q:"最佳组合方式？",
+options:["只用 Vibe","只用 SDD","先 Vibe 后 SDD","不用 AI"],
+answer:2
+}
+},
+{
+title:"第7讲｜如何与 AI 正确协作",
+content:`AI 不懂你的项目，
+它只理解你给出的上下文。
+
+好 prompt = 明确目标 + 明确约束。`,
+refs:[
+["Prompting Guide","https://www.promptingguide.ai/"]
+],
+quiz:{
+q:"好 prompt 的关键是？",
+options:["越长越好","情绪丰富","明确约束","少上下文"],
+answer:2
+}
+},
+{
+title:"第8讲｜给新人的最终建议",
+content:`Vibe Coding 是工具，不是信仰。
+
+你要为结果负责，
+而不是为“感觉”负责。`,
+refs:[
+["The Pragmatic Programmer","https://pragprog.com/titles/tpp20/"]
+],
+quiz:{
+q:"最佳态度是？",
+options:["完全依赖","完全否定","理性使用","只给新手"],
+answer:2
 }
 }
 ];
@@ -165,7 +275,7 @@ async function sendChat(){
 const input=document.getElementById("chatInput");
 const log=document.getElementById("chatlog");
 log.innerHTML+=`<div><b>你：</b>${input.value}</div>`;
-log.innerHTML+=`<div id="loading">AI 正在思考
+log.innerHTML+=`<div id="loading">AI 思考中
 <span class="loading"></span><span class="loading"></span><span class="loading"></span>
 </div>`;
 const r=await fetch("/.netlify/functions/chat",{method:"POST",body:JSON.stringify({message:input.value})});
