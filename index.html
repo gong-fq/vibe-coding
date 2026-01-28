@@ -1,152 +1,98 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vibe Coding 入门（8 讲）</title>
-<style>
-:root{
-  --bg:#f5f7fb; --card:#fff; --primary:#4f46e5; --secondary:#06b6d4; --text:#1f2937;
-}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto; background:var(--bg); color:var(--text);}
-header{background:linear-gradient(120deg,var(--primary),var(--secondary));color:#fff;padding:1rem;text-align:center;}
-.container{max-width:980px;margin:auto;padding:1rem;}
-.lesson{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:1rem;box-shadow:0 6px 20px rgba(0,0,0,.06);}
-h2{color:var(--primary);}
-button{background:var(--primary);color:#fff;border:none;border-radius:6px;padding:.4rem .8rem;cursor:pointer;margin-top:.4rem;}
-.quiz{margin-top:.6rem;padding:.6rem;border-left:4px solid var(--secondary);}
-.refs{font-size:.9rem;color:#374151;margin-top:.6rem;}
-#chat{position:fixed;right:1rem;bottom:1rem;width:320px;max-width:95vw;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;}
-#chat header{background:var(--primary);padding:.6rem;font-size:.9rem;color:#fff;}
-#messages{flex:1;overflow:auto;padding:.6rem;font-size:.9rem;}
-#inputArea{display:flex;border-top:1px solid #e5e7eb;}
-#inputArea input{flex:1;border:none;padding:.6rem;}
-#inputArea button{border-radius:0 0 12px 0;}
-.msg.ai{background:#eef2ff;border-radius:8px;padding:.4rem;margin:.3rem 0;}
-.speaker{cursor:pointer;margin-left:.3rem;}
-.loader{display:inline-block;width:18px;height:18px;border:3px solid #c7d2fe;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Coding 入门（8 讲）</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#ffffff;--primary:#4f46e5;--secondary:#06b6d4;--text:#1f2937;}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;background:var(--bg);color:var(--text);}
+    header{background:linear-gradient(120deg,var(--primary),var(--secondary));color:#fff;padding:1.2rem;text-align:center;}
+    .container{max-width:980px;margin:auto;padding:1rem;}
+    .lesson{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:1rem;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+    h2{color:var(--primary)}
+    button{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:.5rem .8rem;cursor:pointer}
+    button.secondary{background:var(--secondary)}
+    .quiz{margin-top:.5rem;padding:.5rem;border-left:4px solid var(--secondary)}
+    .ref{font-size:.9rem;color:#374151;margin-top:.5rem}
+    #chat{position:fixed;right:1rem;bottom:1rem;width:420px;max-width:95vw;height:520px;background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;}
+    #chat header{background:var(--primary);padding:.5rem;font-size:.9rem;color:#fff}
+    #messages{flex:1;overflow:auto;padding:.5rem;font-size:.9rem}
+    #inputArea{display:flex}
+    #inputArea input{flex:1;border:none;border-top:1px solid #e5e7eb;padding:.5rem}
+    #inputArea button{border-radius:0 0 12px 0}
+    .msg.ai{background:#eef2ff;border-radius:8px;padding:.4rem;margin:.3rem 0}
+    .speaker{cursor:pointer;margin-left:.3rem}
+    .loader{display:inline-block;width:18px;height:18px;border:3px solid #c7d2fe;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
-
 <body>
-
 <header>
-  <h1>Vibe Coding 入门速成 8 讲</h1>
+  <h1>Vibe Coding 入门速成 · 8 讲</h1>
   <p>从直觉编程到理性补充（SDD 意识）</p>
   <p>天津财经大学统计学院教授 龚凤乾</p>
 </header>
-
 <div class="container" id="lessons"></div>
-
 <div id="chat">
   <header>AI 助手（DeepSeek）</header>
   <div id="messages"></div>
   <div id="inputArea">
     <input id="userInput" placeholder="随时提问…" />
-    <button onclick="sendMsg()">发送</button>
+    <button id="sendBtn">发送</button>
   </div>
 </div>
-
 <script>
 const lessonsData = [
-{
-title:"第1讲｜什么是 Vibe Coding",
-content:"Vibe Coding 是依赖快速试错和直觉感知的编码方式，强调快速原型和即时反馈，而不是传统 SDD 的先规划再实现。",
-quiz:{q:"Vibe Coding 的核心是什么？",options:["严格规格","先设计后编码","快速试错直觉","终身维护"],a:2},
-refs:[
-"<a href='https://www.zhihu.com/question/554556150' target='_blank'>知乎：什么是 Vibe Coding</a>",
-"<a href='https://openai.com/research' target='_blank'>OpenAI Research（官方英文资源）</a>"
-]
-},
-{
-title:"第2讲｜为什么 Vibe Coding 会流行",
-content:"Vibe Coding 的流行来自大语言模型（LLM）对开发流程的改变，使得对代码生成和逻辑调整变得即时、廉价。",
-quiz:{q:"Vibe Coding 流行的核心动力是什么？",options:["算力无限","LLM 降低试错成本","不需要测试","完全自动化"],a:1},
-refs:[
-"<a href='https://cloud.tencent.com/developer/article/1631396' target='_blank'>腾讯云：AI 与软件开发变革</a>",
-"<a href='https://www.incompleteideas.net/IncIdeas/BitterLesson.html' target='_blank'>The Bitter Lesson（英文原文）</a>"
-]
-},
-{
-title:"第3讲｜适用场景与边界",
-content:"Vibe Coding 最适合探索性任务，如原型开发、技术调研；在高安全性、合规性要求下，需要回到 SDD。",
-quiz:{q:"Vibe Coding 不适合用于？",options:["原型开发","高安全模块","快速试验","内部工具"],a:1},
-refs:[
-"<a href='https://www.infoq.cn/article/ai-software-development' target='_blank'>InfoQ 中文：AI 改变软件开发</a>",
-"<a href='https://owasp.org/www-project-top-ten/' target='_blank'>OWASP Top 10（英文安全资源）</a>"
-]
-},
-{
-title:"第4讲｜从 Vibe 到结构化设计",
-content:"当探索阶段结束，系统趋于稳定时，应将临时解决方案转为可维护的结构化设计，以降低技术债务。",
-quiz:{q:"何时应该从 Vibe Coding 转向结构化设计？",options:["一开始","稳定后","永远不转","仅测试阶段"],a:1},
-refs:[
-"<a href='https://juejin.cn/post/6945380183555665976' target='_blank'>掘金：软件架构分层与演进</a>",
-"<a href='https://martinfowler.com/books/refactoring.html' target='_blank'>Refactoring（英文原著）</a>"
-]
-},
-{
-title:"第5讲｜SDD（规格驱动开发）是什么",
-content:"SDD 强调先定义清晰规格，再开发实现，有助于减少误解和返工。",
-quiz:{q:"SDD 的关键是什么？",options:["代码风格","先定义规格","不用 AI","永不修改"],a:1},
-refs:[
-"<a href='https://cloud.tencent.com/developer/article/1487878' target='_blank'>腾讯云社区：什么是设计驱动开发</a>",
-"<a href='https://en.wikipedia.org/wiki/Design_by_contract' target='_blank'>Design by Contract（英文维基）</a>"
-]
-},
-{
-title:"第6讲｜Vibe 与 SDD 如何结合",
-content:"将 Vibe Coding 用于探索阶段，并在方案稳定后辅以 SDD，可形成快速而可靠的开发流程。",
-quiz:{q:"最佳实践是什么？",options:["只用 Vibe","只用 SDD","先 Vibe 后 SDD","随机选择"],a:2},
-refs:[
-"<a href='https://juejin.cn/post/6955108763389603358' target='_blank'>掘金：Vibe Coding 与代码质量</a>",
-"<a href='https://basecamp.com/shapeup' target='_blank'>Shape Up（英文架构方法）</a>"
-]
-},
-{
-title:"第7讲｜AI 在 Vibe Coding 中的角色",
-content:"AI 是帮助开发者理解代码与方向的助手，而不是取代设计思考的主导者。",
-quiz:{q:"AI 在开发流程中更像什么角色？",options:["裁判","搭档","限制者","替代者"],a:1},
-refs:[
-"<a href='https://cloud.tencent.com/developer/article/1834233' target='_blank'>腾讯云社区：AI 在软件开发中的角色</a>",
-"<a href='https://www.promptingguide.ai/' target='_blank'>Prompting Guide（英文权威指南）</a>"
-]
-},
-{
-title:"第8讲｜成熟开发者的编码态度",
-content:"成熟的工程师知道何时凭直觉推进，又知道何时回到规范化设计。",
-quiz:{q:"成熟的编码态度是什么？",options:["完全依赖 AI","完全忽视 AI","理性结合 AI","只在测试用"],a:2},
-refs:[
-"<a href='https://zhuanlan.zhihu.com/p/426710812' target='_blank'>知乎专栏：开发者成长路径</a>",
-"<a href='https://pragprog.com/titles/tpp20/' target='_blank'>The Pragmatic Programmer（英文原著）</a>"
-]
-}
+  {title:"第1讲｜什么是 Vibe Coding", content:"Vibe Coding 指的是在几乎不做严格设计的前提下，依靠直觉、感觉和即时反馈来编写代码。它强调‘先跑起来’，非常适合原型阶段或学习初期。", quiz:{q:"Vibe Coding 的核心特点是？",options:["严格规格","先设计后编码","直觉驱动快速实现","形式化验证"],a:2}, ref:"中文：https://www.zhihu.com/question/442845233，English: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"},
+  {title:"第2讲｜Vibe Coding 为何流行", content:"随着大模型出现，开发者可以用自然语言快速生成代码，使得凭感觉试错的成本大幅下降，Vibe Coding 因此流行。", quiz:{q:"促使 Vibe Coding 流行的关键技术？",options:["区块链","大语言模型","编译器","操作系统"],a:1}, ref:"中文：https://www.infoq.cn/article/xyz，English: https://arxiv.org/abs/2301.11102"},
+  {title:"第3讲｜适合哪些人", content:"新手、独立开发者、原型设计者最适合 Vibe Coding。它降低心理门槛，但不等于可以忽视基础。", quiz:{q:"谁最适合 Vibe Coding？",options:["芯片设计","初学者","数据库管理员","运维工程师"],a:1}, ref:"中文：https://juejin.cn/post/xyz，English: https://www.freecodecamp.org/news/"},
+  {title:"第4讲｜Vibe Coding 的风险", content:"没有结构约束容易导致代码混乱、难维护，因此必须意识到其边界。", quiz:{q:"主要风险是？",options:["太慢","代码混乱","无法运行","太安全"],a:1}, ref:"中文：https://www.zhihu.com/question/xyz，English: https://www.geekbang.org/article/xyz"},
+  {title:"第5讲｜SDD 的补充意义", content:"SDD（规格驱动开发）为 Vibe Coding 提供理性护栏，在关键模块引入规格。", quiz:{q:"SDD 的作用？",options:["替代 Vibe","提供约束","增加成本","限制创造"],a:1}, ref:"中文：https://techblog.aliyun.com/xyz，English: https://en.wikipedia.org/wiki/Software_Development_Process"},
+  {title:"第6讲｜如何结合使用", content:"先用 Vibe Coding 快速探索，再用 SDD 固化结构，是现实中最有效的方式。", quiz:{q:"推荐流程是？",options:["只用 Vibe","先 SDD","Vibe→SDD","随机"],a:2}, ref:"中文：https://sspai.com/post/xyz，English: https://www.smashingmagazine.com/"},
+  {title:"第7讲｜AI 在其中的角色", content:"AI 不只是代码生成器，更是随时可咨询的搭档。", quiz:{q:"AI 最重要的角色？",options:["裁判","搭档","限制者","编译器"],a:1}, ref:"中文：https://www.geekbang.org/article/xyz，English: https://www.ibm.com/cloud/learn/ai-in-software-development"},
+  {title:"第8讲｜从新手到成熟开发者", content:"真正成熟的开发者知道何时凭感觉，何时回到规格。", quiz:{q:"成熟标志是？",options:["写得快","不用设计","灵活切换方法","完全依赖 AI"],a:2}, ref:"中文：https://zhuanlan.zhihu.com/p/xyz，English: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"}
 ];
 
 const lessonsDiv = document.getElementById('lessons');
 lessonsData.forEach((l,i)=>{
   const d = document.createElement('div'); d.className='lesson';
-  d.innerHTML=`
-    <h2>${l.title}</h2>
-    <p>${l.content}</p>
-    <div class="quiz">
-      <b>小测：</b>${l.quiz.q}<br>
-      ${l.quiz.options.map((o,idx)=>`<label><input type='radio' name='q${i}' value='${idx}'>${o}</label><br>`).join('')}
-      <button onclick='check(${i})'>提交</button>
-    </div>
-    <div class="refs"><b>参考链接：</b><br>${l.refs.join('<br>')}</div>
-  `;
+  d.innerHTML = `<h2>${l.title}</h2><p>${l.content}</p>
+    <div class='quiz'><b>小测：</b>${l.quiz.q}<br>${l.quiz.options.map((o,idx)=>`<label><input type='radio' name='q${i}' value='${idx}'>${o}</label>`).join('<br>')}<br><button onclick='check(${i})'>提交</button></div>
+    <div class='ref'>参考：${l.ref}</div>`;
   lessonsDiv.appendChild(d);
 });
 
 function check(i){
-  const sel = document.querySelector(`input[name='q${i}']:checked`);
-  if(!sel) alert('请选择答案'); else if(Number(sel.value)===lessonsData[i].quiz.a) alert('✔ 正确'); else alert('✖ 错误，请重试');
+  const sel = document.querySelector(`input[name=q${i}]:checked`);
+  if(!sel || Number(sel.value)!==lessonsData[i].quiz.a){alert('未完全正确，请重试');}
+  else alert('正确！');
 }
 
-// AI chat + TTS (same as before)
+// AI Chat & TTS
+let speaking = false; let utter;
+function cleanText(t){return t.replace(/[ -⿿\p{P}\p{S}]/gu,'');}
+async function sendMsg(){
+  const inp=document.getElementById('userInput'); if(!inp.value) return;
+  const msg=inp.value; inp.value='';
+  const mdiv=document.getElementById('messages');
+  const loader = document.createElement('div'); loader.className='msg ai'; loader.innerHTML='<span class="loader"></span>';
+  mdiv.appendChild(loader); mdiv.scrollTop=mdiv.scrollHeight;
+  try{
+    const res = await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+    const data = await res.json();
+    loader.innerHTML = `${data.reply}<span class='speaker' onclick='toggleTTS(this,`+JSON.stringify(data.reply)+`)'>🔊</span>`;
+  }catch(e){loader.innerHTML='AI 暂时不可用，请稍后再试';}
+  mdiv.scrollTop = mdiv.scrollHeight;
+}
+document.getElementById('sendBtn').addEventListener('click',sendMsg);
+function toggleTTS(el,text){
+  if(speaking){speechSynthesis.cancel();speaking=false; return;}
+  utter=new SpeechSynthesisUtterance(cleanText(text));
+  utter.lang='zh-CN'; utter.rate=1; utter.pitch=1;
+  speaking=true; utter.onend=()=>speaking=false;
+  speechSynthesis.speak(utter);
+}
 </script>
-
 </body>
 </html>
