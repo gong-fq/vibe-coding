@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<title>Vibe Coding 入门学院</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
+h1, h2 { color: #333; }
+.lesson { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+.quiz { background: #f9f9f9; padding: 10px; margin-top: 10px; }
+button { padding: 6px 12px; margin-top: 8px; }
+.correct { color: green; }
+.wrong { color: red; }
+#chatbox { border: 1px solid #ccc; padding: 10px; margin-top: 30px; }
+#chatlog { height: 200px; overflow-y: auto; background: #fafafa; padding: 8px; }
+</style>
+</head>
+
+<body>
+
+<h1>🎧 Vibe Coding 入门学院（8 讲）</h1>
+<p>目标：让新手<strong>快速理解什么是 Vibe Coding、何时该停下来回到 SDD</strong></p>
+<p>设计者：天津财经大学统计学院教授 龚凤乾</p>
+
+<div id="lessons"></div>
+
+<hr>
+
+<h2>🤖 AI 助手（DeepSeek）</h2>
+<div id="chatbox">
+  <div id="chatlog"></div>
+  <input id="chatInput" placeholder="向 AI 提问…" style="width:80%">
+  <button onclick="sendChat()">发送</button>
+</div>
+
+<script>
+const lessons = [
+{
+title: "第1讲：什么是 Vibe Coding",
+content: "Vibe Coding 是一种依赖直觉、快速试错、与 LLM 协作的编码方式，适合探索期。",
+quiz: {
+q: "Vibe Coding 最适合哪种阶段？",
+options: ["需求冻结期", "探索与原型期", "上线维护期", "安全审计期"],
+answer: 1
+}
+},
+{
+title: "第2讲：为什么 Vibe Coding 会流行",
+content: "LLM 极大降低了试错成本，让“先跑起来”变得可行。",
+quiz: {
+q: "Vibe Coding 流行的根本原因是？",
+options: ["程序员更懒了", "算力便宜", "LLM 降低试错成本", "传统工程过时"],
+answer: 2
+}
+},
+{
+title: "第3讲：Vibe Coding 的边界",
+content: "Vibe Coding 不适合安全、支付、医疗等高风险模块。",
+quiz: {
+q: "以下哪类模块不适合 Vibe Coding？",
+options: ["Demo 页面", "内部工具", "支付系统", "概念验证"],
+answer: 2
+}
+},
+{
+title: "第4讲：从 Vibe 到结构",
+content: "当功能稳定后，应提炼模块、接口与状态。",
+quiz: {
+q: "何时应从 Vibe 转向结构化设计？",
+options: ["一开始", "功能反复变化时", "功能稳定后", "永远不需要"],
+answer: 2
+}
+},
+{
+title: "第5讲：SDD 是什么",
+content: "SDD（Spec Driven Development）以规格说明为核心。",
+quiz: {
+q: "SDD 的核心是？",
+options: ["写很多文档", "规格先行", "不使用 AI", "慢开发"],
+answer: 1
+}
+},
+{
+title: "第6讲：Vibe + SDD 的正确关系",
+content: "Vibe 用于探索，SDD 用于收敛。",
+quiz: {
+q: "最佳实践是？",
+options: ["只用 Vibe", "只用 SDD", "先 Vibe 后 SDD", "完全不用 AI"],
+answer: 2
+}
+},
+{
+title: "第7讲：如何与 AI 正确对话",
+content: "好 prompt = 明确目标 + 约束 + 示例。",
+quiz: {
+q: "以下哪项是好 prompt 的关键？",
+options: ["越长越好", "明确约束", "多情绪", "少上下文"],
+answer: 1
+}
+},
+{
+title: "第8讲：给新人的最终建议",
+content: "不要神化 Vibe Coding，它是工具，不是信仰。",
+quiz: {
+q: "对 Vibe Coding 的正确态度是？",
+options: ["完全依赖", "完全否定", "理性使用", "只给新手用"],
+answer: 2
+}
+}
+];
+
+const lessonsDiv = document.getElementById("lessons");
+
+lessons.forEach((l, i) => {
+  const div = document.createElement("div");
+  div.className = "lesson";
+  div.innerHTML = `
+    <h2>${l.title}</h2>
+    <p>${l.content}</p>
+    <div class="quiz">
+      <strong>小考：</strong>${l.quiz.q}<br>
+      ${l.quiz.options.map((o, idx) =>
+        `<label><input type="radio" name="q${i}" value="${idx}"> ${o}</label><br>`
+      ).join("")}
+      <button onclick="check(${i}, ${l.quiz.answer})">提交</button>
+      <div id="res${i}"></div>
+    </div>
+  `;
+  lessonsDiv.appendChild(div);
+});
+
+function check(i, ans) {
+  const sel = document.querySelector(`input[name="q${i}"]:checked`);
+  const res = document.getElementById("res"+i);
+  if (!sel) return;
+  if (parseInt(sel.value) === ans) {
+    res.innerHTML = "<span class='correct'>✔ 正确！进入下一讲。</span>";
+  } else {
+    res.innerHTML = "<span class='wrong'>✖ 未完全理解，建议重做。</span>";
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const log = document.getElementById("chatlog");
+  log.innerHTML += `<div><b>你：</b>${input.value}</div>`;
+  const r = await fetch("/.netlify/functions/chat", {
+    method: "POST",
+    body: JSON.stringify({ message: input.value })
+  });
+  const d = await r.json();
+  log.innerHTML += `<div><b>AI：</b>${d.reply}</div>`;
+  input.value = "";
+}
+</script>
+
+</body>
+</html>
